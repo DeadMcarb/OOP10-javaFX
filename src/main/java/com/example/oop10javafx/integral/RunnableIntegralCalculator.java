@@ -1,21 +1,21 @@
-package org.example;
+package com.example.oop10javafx.integral;
 
 import java.util.function.DoubleUnaryOperator;
 
 public class RunnableIntegralCalculator implements Runnable {
 
-    private Main main;
+    private MainCalculator mainCalculator;
 
-    private IntegralCalculator calculator;
+    private IntegralFunction integralFunction;
 
-    public RunnableIntegralCalculator(double start, double end, int nSteps, DoubleUnaryOperator f, Main main) {
-        calculator = new IntegralCalculator(start, end, nSteps, f);
-        this.main = main;
+    public RunnableIntegralCalculator(double start, double end, int nSteps, DoubleUnaryOperator f, MainCalculator mainCalculator) {
+        integralFunction = new IntegralFunction(start, end, nSteps, f);
+        this.mainCalculator = mainCalculator;
     }
 
     @Override
     public void run() {
-        double v = calculator.calculate();
-        main.send(v);
+        double v = integralFunction.calculate();
+        mainCalculator.send(v);
     }
 }

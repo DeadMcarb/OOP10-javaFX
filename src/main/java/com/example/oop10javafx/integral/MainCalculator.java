@@ -1,32 +1,30 @@
 package com.example.oop10javafx.integral;
 
-public class Main {
-    public static void main(String[] args) {
-        Main main = new Main();
-        main.run();
-    }
+public class MainCalculator {
 
     private double totalResult;
     private int finished;
 
-    private void run() {
+    public MainCalculator() {
+    }
+
+    public MyPair calculateAll(int nPieces, int nThreads) {
         double a = 1.0;
         double b = Math.sqrt(2.0);
-        int n = 100_000_000;
 
-//        long startTime = System.currentTimeMillis();
-//        IntegralCalculator calc = new IntegralCalculator(a, b, n, Math::sin);
-//        double v = calc.calculate();
-//        long finishTime = System.currentTimeMillis();
-//        System.out.println("v = " + v);
-//        System.out.println(finishTime - startTime);
-        int nThreads = 10;
+
         double delta = (b - a) / nThreads;
         totalResult = 0;
         finished = 0;
         long startTime = System.currentTimeMillis();
+
+
         for (int i = 0; i < nThreads; i++) {
-            RunnableIntegralCalculator calculator = new RunnableIntegralCalculator(a + i * delta, a + i * delta + delta, n / nThreads, Math::sin, this);
+            RunnableIntegralCalculator calculator = new RunnableIntegralCalculator(
+                    a + i * delta,
+                    a + i * delta + delta,
+                    nPieces / nThreads,
+                    x -> Math.sqrt(2-x*x), this);
             new Thread(calculator).start();
         }
         try {
@@ -39,9 +37,11 @@ public class Main {
             throw new RuntimeException("Interrupted");
         }
         long finishTime = System.currentTimeMillis();
-        System.out.println("Result = " + totalResult);
-        System.out.println(finishTime - startTime);
+
+        return new MyPair(totalResult, finishTime - startTime);
     }
+
+
 
     public synchronized void send(double v) {
         totalResult += v;
